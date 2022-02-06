@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +56,7 @@ import kong.unirest.Unirest;
 
 
 @RestController
+//@CrossOrigin(origins="*", maxAge=3600)
 public class MyControllers {
 	
 	@Autowired
@@ -189,7 +192,8 @@ public class MyControllers {
 		    	}
 		    	}catch(BadCredentialsException e)
 		    	{
-		    		response=ResponseEntity.ok(new ResponseData(ErrorConstant.BAD_CREDENTIAS.getErrorMessage(),ErrorConstant.BAD_CREDENTIAS.getErrorCode()));
+		    		response=new ResponseEntity(new ResponseData(ErrorConstant.BAD_CREDENTIAS.getErrorMessage(),ErrorConstant.BAD_CREDENTIAS.getErrorCode()),
+		    				HttpStatus.UNAUTHORIZED);
 		    	}
 		    	
 		    	
@@ -236,6 +240,7 @@ public class MyControllers {
     @RequestMapping(value="/getUnapprovedUsers",method = RequestMethod.GET , produces = "application/json")
     public ResponseEntity<?> getUnapprovedUsers()
     {
+    	System.out.println("In getUnapprovedUsers");
     	List<User> listUser=new ArrayList<>();
     	ResponseEntity<?> response=null;
     	try {

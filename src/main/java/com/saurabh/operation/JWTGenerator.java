@@ -44,11 +44,9 @@ public class JWTGenerator {
 	    public String generateToken(UserDetails userDetails) {
 	        Map<String, Object> claims = new HashMap<>();
 	        String name=userDetails.getUsername();
-	        System.out.println("name :"+name);
 //	        UserDetail userDetail;
 			try {
 				UserDetail userDetail = new DBOperation().readUserDetailObject(name);
-				System.out.println("address "+userDetail.getAddress());
 		        claims.put("address",userDetail.getAddress());
 		        claims.put("id",userDetail.getId());
 		        claims.put("mobile",userDetail.getMobile());

@@ -26,7 +26,6 @@ import com.saurabh.service.UserDetailService;
 public class DBOperation {
 	Connection con;
      public DBOperation() throws ClassNotFoundException, SQLException {
-    	 Class.forName(DBConstant.DRIVER);
  		 con= DriverManager.getConnection(DBConstant.URL, DBConstant.USER,DBConstant.PASSWORD);
 		// TODO Auto-generated constructor stub
 	}
