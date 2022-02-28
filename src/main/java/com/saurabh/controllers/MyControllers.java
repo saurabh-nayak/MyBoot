@@ -56,7 +56,7 @@ import kong.unirest.Unirest;
 
 
 @RestController
-//@CrossOrigin(origins="*", maxAge=3600)
+@CrossOrigin(origins="*", allowedHeaders="*", maxAge = 3600,allowCredentials="true",exposedHeaders="**")
 public class MyControllers {
 	
 	@Autowired
@@ -166,6 +166,7 @@ public class MyControllers {
 
 	
     @RequestMapping(value="/authenticate",method = RequestMethod.POST, consumes = "application/json" , produces = "application/json")
+    @CrossOrigin(origins="*", maxAge=3600, allowedHeaders="*")
     public ResponseEntity<?> authenticateUser(@RequestBody String request) 
     {
     	logger.debug("request for authenticate came");

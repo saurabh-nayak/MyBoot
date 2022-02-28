@@ -3,6 +3,7 @@ package com.saurabh.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,6 +23,7 @@ import com.saurabh.filter.JwtRequestFilter;
 
 
 @EnableWebSecurity
+@Order
 public class MyWebSecurity extends WebSecurityConfigurerAdapter{
 
 	@Autowired
@@ -30,6 +32,14 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	
+//	CsrfTokenResponseHeaderBindingFilter csrfFilter = csrfTokenResponseHeaderBindingFilter();
+	
+	/*
+	 * @Autowired private CsrfHeaderFilter csrfHeaderFilter;
+	 */
+	
+//	private static final String CSRF_HEADER_NAME = "XSRF-TOKEN";
 //	@Override
 //	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		// TODO Auto-generated method stub
@@ -52,7 +62,9 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter{
 		return provider;
 	}
 	
-	
+
+
+
 	@Bean
 	public PasswordEncoder getPasswordEncoder()
 	{
@@ -65,39 +77,53 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter{
 		// TODO Auto-generated method stub
 		
 		
-		http.authorizeRequests()
-		.antMatchers("/admin").hasRole("ADMIN")
-		.antMatchers("/user").hasAnyRole("USER","ADMIN")
-		.antMatchers("/").permitAll().and().formLogin()
-		;
-//		http.authorizeRequests()
-//		.antMatchers("/admin").hasRole("ADMIN")
-//		.antMatchers("/user").hasAnyRole("USER","ADMIN")
-//		.antMatchers("/").permitAll();
-//		
-//		http.authorizeRequests().antMatchers("/login")
-//		.permitAll().anyRequest().authenticated().and().
-//		exceptionHandling().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+		/*
+		 * http.authorizeRequests() .antMatchers("/admin").hasRole("ADMIN")
+		 * .antMatchers("/user").hasAnyRole("USER","ADMIN")
+		 * .antMatchers("/").permitAll().and().formLogin() ;
+		 */
 		
-		http.csrf().disable()
+		
+		
+		/*
+		 * http.authorizeRequests() .antMatchers("/admin").hasRole("ADMIN")
+		 * .antMatchers("/user").hasAnyRole("USER","ADMIN")
+		 * .antMatchers("/").permitAll();
+		 * 
+		 * http.authorizeRequests().antMatchers("/login")
+		 * .permitAll().anyRequest().authenticated().and().
+		 * exceptionHandling().and().sessionManagement().sessionCreationPolicy(
+		 * SessionCreationPolicy.ALWAYS);
+		 */
+		 
+		
+		http
+		.cors().and()///To enable cross origin resource sharing
+		.csrf().disable()
+//		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//		.and()
 		.authorizeRequests().antMatchers("/admin","/getUser").hasRole("ADMIN")
 		.antMatchers("/user").hasAnyRole("USER","ADMIN")
-		.antMatchers("/authenticate","/addUser").permitAll().
-				anyRequest().authenticated().and().
-				exceptionHandling().and().sessionManagement()
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		
+		.antMatchers("/authenticate","/addUser").permitAll()
+		.anyRequest().authenticated().and()
+		
+		.exceptionHandling().and().sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//        .addFilterAfter(csrfHeaderFilter, jwtRequestFilter.getClass());
+//		.addFilterAfter(csrfFilter, CsrfFilter.class);
+		
 
-
-//		http.csrf().disable()
-//		.authorizeRequests().antMatchers("/login")
-//		.permitAll().anyRequest().authenticated().and()
-//		.formLogin().loginPage("/login")
-//		.permitAll()
-//		.and().logout().invalidateHttpSession(true)
-//		.clearAuthentication(true)
-//		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//		.logoutSuccessUrl("/login").permitAll();
+		/*
+		 * http.csrf().disable() .authorizeRequests().antMatchers("/login")
+		 * .permitAll().anyRequest().authenticated().and()
+		 * .formLogin().loginPage("/login") .permitAll()
+		 * .and().logout().invalidateHttpSession(true) .clearAuthentication(true)
+		 * .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+		 * .logoutSuccessUrl("/login").permitAll();
+		 */
          
 	}
 	
@@ -117,6 +143,18 @@ http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.clas
 		web.ignoring().antMatchers("/add","/signup");
 	}
 	
-
+	/*
+	 * private CsrfTokenRepository csrfTokenRepository() {
+	 * HttpSessionCsrfTokenRepository repository = new
+	 * HttpSessionCsrfTokenRepository(); repository.setHeaderName(CSRF_HEADER_NAME);
+	 * return repository; }
+	 */
+	 
+		
+	/*
+	 * private CsrfTokenResponseHeaderBindingFilter
+	 * csrfTokenResponseHeaderBindingFilter() { return new
+	 * CsrfTokenResponseHeaderBindingFilter(); }
+	 */
 
 }
