@@ -96,14 +96,13 @@ public class MyControllers {
 	
 	
 	@RequestMapping(value="/getUser",
-			method = {RequestMethod.POST})
-	public Map<Integer,Object> admin(@RequestHeader(value="name") String name) throws JsonParseException, JsonMappingException, IOException, ClassNotFoundException, SQLException
+			method = {RequestMethod.GET})
+	public UserDetail admin(@RequestHeader(value="name") String name) throws JsonParseException, JsonMappingException, IOException, ClassNotFoundException, SQLException
 	{
-      	    Map<Integer,Object> userDetailMap = null;
 
-			userDetailMap=new DBOperation().readUserDetail(name);
+			UserDetail userDetail=new DBOperation().readUserDetail(name);
 		
-		    return userDetailMap;
+		    return userDetail;
 		
 	}
 	

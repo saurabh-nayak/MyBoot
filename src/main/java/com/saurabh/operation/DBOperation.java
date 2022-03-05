@@ -95,22 +95,21 @@ public class DBOperation {
     
     
     
-    public Map<Integer,Object> readUserDetail(String name) throws SQLException
+    public UserDetail readUserDetail(String name) throws SQLException
     {
     	con.setAutoCommit(false);
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(QueryList.SELECT_USERDETAIL_NAME+name+"'");
-		Map<Integer,Object>  userDetailMap=new HashMap<Integer, Object>();
+		UserDetail userDetail=null;
 		while(rs.next())
 		{
-			UserDetail userDetail = new UserDetail();
+			userDetail = new UserDetail();
 			userDetail.setId(rs.getInt("id"));
 			userDetail.setMobile(rs.getString("mobile"));
 			userDetail.setName(rs.getString("name"));
 			userDetail.setAddress(rs.getString("address"));
-			userDetailMap.put(userDetail.getId(), userDetail);
 		}
-		return userDetailMap;
+		return userDetail;
     }
         
     
